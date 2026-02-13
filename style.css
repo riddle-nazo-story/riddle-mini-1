@@ -1,0 +1,223 @@
+:root{
+  --main:#00b4f0;
+  --dark:#008ecf;
+  --light:#e6f8ff;
+  --line:#bfeaff;
+}
+
+body{
+  margin:0;
+  font-family:'Noto Sans JP',sans-serif;
+  background:#fff;
+  line-height:1.8;
+}
+
+.hero img{
+  width:100%;
+  display:block;
+}
+
+.section{
+  max-width:900px;
+  margin:100px auto;
+  padding:0 20px;
+}
+
+h1{
+  text-align:center;
+  color:var(--dark);
+  margin:40px 0;
+}
+
+h2{
+  color:var(--dark);
+  margin-bottom:40px;
+  border-left:6px solid var(--main);
+  padding-left:12px;
+}
+
+.story{
+  border-left:4px solid var(--main);
+  padding-left:20px;
+}
+
+.participation img{
+  width:100%;
+  border:4px solid var(--light);
+}
+
+.venue-box{
+  background:var(--light);
+  padding:20px;
+  border:2px solid var(--main);
+}
+
+.map-wrap iframe{
+  width:100%;
+  height:300px;
+  border:0;
+  margin:20px 0;
+}
+
+.access-btn{
+  display:inline-block;
+  padding:10px 20px;
+  background:var(--main);
+  color:#fff;
+  text-decoration:none;
+}
+
+.access-btn:hover{
+  background:var(--dark);
+}
+
+/* ===== チケット料金 ===== */
+
+.price-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-bottom:20px;
+  font-size:0.95rem;
+}
+
+.price-table th,
+.price-table td{
+  border:1px solid #bfeaff;
+  padding:14px;
+  text-align:center;
+}
+
+.price-table thead th{
+  background:#00b4f0;
+  color:#fff;
+  font-weight:600;
+}
+
+.price-table tbody tr:nth-child(even){
+  background:#f2faff;
+}
+
+.price-table tbody tr:hover{
+  background:#e6f8ff;
+}
+
+.price-note{
+  font-size:0.85rem;
+  color:#666;
+  line-height:1.7;
+}
+
+/* ===== カレンダー ===== */
+
+#calendar{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:8px;
+  margin-top:20px;
+}
+
+.weekday{
+  text-align:center;
+  font-weight:600;
+  color:#008ecf;
+  padding:10px 0;
+}
+
+.day{
+  border:1px solid #bfeaff;
+  min-height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:0.95rem;
+  color:#bbb; /* 通常日は薄く */
+  background:#fff;
+}
+
+.day.active{
+  background:#00b4f0;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  border:2px solid #008ecf;
+}
+
+.day.active:hover{
+  background:#008ecf;
+}
+
+.empty{
+  border:none;
+  background:transparent;
+}
+
+/* ===== アコーディオン ===== */
+
+.acc-btn{
+  width:100%;
+  padding:18px;
+  margin-top:14px;
+  background:#e6f8ff;
+  border:none;
+  text-align:left;
+  cursor:pointer;
+  transition:0.3s;
+  font-weight:600;
+}
+
+.acc-btn.active{
+  background:#00b4f0;
+  color:#fff;
+}
+
+.acc-content{
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  padding:0 20px;
+  background:#f4fbff;
+  transition:all 0.4s ease;
+  line-height:1.9;
+  font-size:0.95rem;
+}
+
+
+/* モーダル */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:#fff;
+  width:90%;
+  max-width:500px;
+  max-height:80vh;
+  display:flex;
+  flex-direction:column;
+}
+
+.modal-header{
+  padding:15px;
+  border-bottom:2px solid var(--light);
+  display:flex;
+  justify-content:space-between;
+}
+
+.modal-body{
+  padding:20px;
+  overflow-y:auto;
+}
+
+.time-slot{
+  border:2px solid var(--main);
+  background:var(--light);
+  padding:12px;
+  margin:10px 0;
+  text-align:center;
+  font-weight:bold;
+}
