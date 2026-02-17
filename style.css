@@ -313,3 +313,54 @@ h2{
     font-size:0.95rem;
   }
 }
+
+/* ===== 公演枠 ===== */
+
+.slot-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-top:20px;
+}
+
+.slot-card{
+  border:2px solid var(--main);
+  background:var(--light);
+  padding:20px;
+  text-align:center;
+  font-weight:bold;
+  text-decoration:none;
+  color:#333;
+  transition:0.2s;
+  border-radius:8px;
+}
+
+.slot-card:hover{
+  background:var(--main);
+  color:#fff;
+}
+
+.slot-time{
+  font-size:1.1rem;
+  margin-bottom:8px;
+}
+
+.slot-status{
+  font-size:0.9rem;
+}
+
+.slot-status.many{ color:#2ecc71; }
+.slot-status.few{ color:#f39c12; }
+.slot-status.full{ color:#e74c3c; }
+
+.update-time{
+  font-size:0.85rem;
+  color:#666;
+}
+
+/* スマホ */
+@media (max-width:768px){
+  .slot-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
