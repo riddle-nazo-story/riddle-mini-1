@@ -123,15 +123,28 @@ h2{
   padding:10px 0;
 }
 
+/* 上段の曜日のみ色変更 */
+.weekday.sun{
+  color:#e74c3c;
+}
+
+.weekday.sat{
+  color:#2980ff;
+}
+
 .day{
   border:1px solid #bfeaff;
-  min-height:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:0.95rem;
-  color:#bbb; /* 通常日は薄く */
+  min-height:70px;
   background:#fff;
+  position:relative;
+
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:8px;
+
+  font-size:0.95rem;
+  color:#bbb;
 }
 
 .day.active{
@@ -143,12 +156,43 @@ h2{
 }
 
 .day.active:hover{
-  background:#008ecf;
+  filter:brightness(0.95);
 }
 
 .empty{
   border:none;
   background:transparent;
+}
+
+/* ===== ステータスマーク ===== */
+
+.status-mark{
+  position:absolute;
+  bottom:6px;
+  right:6px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.status-mark.many{
+  color:#2ecc71;
+}
+
+.status-mark.few{
+  color:#f39c12;
+}
+
+.status-mark.full{
+  color:#e74c3c;
+}
+
+.status-mark.notyet{
+  color:#777;
+  font-size:11px;
+}
+
+.day.active .status-mark{
+  text-shadow:0 0 4px rgba(0,0,0,0.4);
 }
 
 /* ===== アコーディオン ===== */
@@ -181,8 +225,8 @@ h2{
   font-size:0.95rem;
 }
 
+/* ===== モーダル ===== */
 
-/* モーダル */
 .modal{
   display:none;
   position:fixed;
@@ -199,6 +243,8 @@ h2{
   max-height:80vh;
   display:flex;
   flex-direction:column;
+  border-radius:6px;
+  overflow:hidden;
 }
 
 .modal-header{
@@ -206,6 +252,7 @@ h2{
   border-bottom:2px solid var(--light);
   display:flex;
   justify-content:space-between;
+  font-weight:bold;
 }
 
 .modal-body{
@@ -214,10 +261,55 @@ h2{
 }
 
 .time-slot{
+  display:block;
+  text-decoration:none;
+  color:inherit;
   border:2px solid var(--main);
   background:var(--light);
   padding:12px;
   margin:10px 0;
   text-align:center;
   font-weight:bold;
+  transition:0.2s;
+}
+
+.time-slot:hover{
+  background:var(--main);
+  color:#fff;
+}
+
+/* ===== スマホ最適化 ===== */
+
+@media (max-width:600px){
+
+  .section{
+    margin:60px auto;
+    padding:0 14px;
+  }
+
+  #calendar{
+    gap:4px;
+  }
+
+  .day{
+    min-height:60px;
+    font-size:0.9rem;
+    padding:6px;
+  }
+
+  .status-mark{
+    font-size:12px;
+    bottom:4px;
+    right:4px;
+  }
+
+  .modal-content{
+    width:95%;
+    max-height:85vh;
+  }
+
+  .time-slot{
+    padding:14px;
+    font-size:0.95rem;
+  }
 }
