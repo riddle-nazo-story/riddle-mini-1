@@ -1,145 +1,78 @@
-const calendar = document.getElementById("calendar");
-const modal = document.getElementById("modal");
-const modalDate = document.getElementById("modal-date");
-const modalBody = document.getElementById("modal-body");
-const closeBtn = document.getElementById("close");
+const API_URL = "https://pubapi.escape.id/e/MY3qtFqNrj5a/loc/U4Etz4rYhyNb/slots.json";
+const BASE_URL = "https://escape.id/RIDDLESTORY-org/e-mini-1/";
 
-const EVENT_PAGE_URL = "https://escape.id/RIDDLESTORY-org/e-mini-1/";
+const SLOT_MAP = {
+  "10:30":"?u=6c636fe0-ab90-454a-b251-72f44a34d078",
+  "11:00":"?u=36cbe960-3c99-4aff-a6a7-fbc6e0afc22c",
+  "11:30":"?u=342504f7-f591-41bc-8165-e3add136fb39",
+  "12:00":"?u=1d4327a0-cbaa-4c4a-bf9a-32e06e9d8a30",
+  "12:30":"?u=056c378b-5238-4ab7-98f8-4fff1bfa9646",
+  "13:00":"?u=e5a51911-c866-4272-8901-6e47de1df08d",
+  "13:30":"?u=7a5fba87-88cf-412c-bbd9-fd1830aac10f",
+  "14:00":"?u=2b038710-81cf-4a87-b076-de0c3fdfc046"
+};
 
-const EVENT_ID = "MY3qtFqNrj5a";
-const LOCATION_ID = "U4Etz4rYhyNb";
-
-const API_URL = `https://pubapi.escape.id/e/${EVENT_ID}/loc/${LOCATION_ID}/slots.json`;
-
-const weekdays = ["日","月","火","水","木","金","土"];
-
-calendar.innerHTML = "";
-
-// ===== 曜日 =====
-weekdays.forEach((day,index)=>{
-  const wd = document.createElement("div");
-  wd.classList.add("weekday");
-  wd.textContent = day;
-
-  if(index===0) wd.classList.add("sun");
-  if(index===6) wd.classList.add("sat");
-
-  calendar.appendChild(wd);
-});
-
-// ===== API取得 =====
 fetch(API_URL)
   .then(res=>res.json())
   .then(data=>{
-    generateCalendar(data);
-  })
-  .catch(err=>{
-    console.error("API取得失敗:",err);
+    renderSlots(data);
   });
 
-function generateCalendar(apiData){
+function renderSlots(data){
 
-  if(!apiData.dates || !apiData.dates.length) return;
+  const grid = document.getElementById("slot-grid");
+  const updateText = document.getElementById("update-time");
 
-  const firstDate = new Date(apiData.dates[0].date);
-  const year = firstDate.getFullYear();
-  const month = firstDate.getMonth();
+  grid.innerHTML = "";
 
-  const eventDates = apiData.dates.map(d=>d.date);
+  // 更新時間表示
+  const now = new Date();
+  updateText.textContent =
+    `空き状況更新：${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
 
-  const firstDay = new Date(year,month,1).getDay();
-  const lastDate = new Date(year,month+1,0).getDate();
+  if(!data.dates || !data.dates.length) return;
 
-  // 空白
-  for(let i=0;i<firstDay;i++){
-    const empty=document.createElement("div");
-    empty.classList.add("day","empty");
-    calendar.appendChild(empty);
-  }
+  const slots = data.dates[0].slots;
 
-  for(let i=1;i<=lastDate;i++){
+  Object.keys(SLOT_MAP).forEach(time=>{
 
-    const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(i).padStart(2,"0")}`;
+    const slotData = slots.find(s=>{
+      return s.startAt.includes(time);
+    });
 
-    const day=document.createElement("div");
-    day.classList.add("day");
-    day.textContent=i;
+    let statusText = "販売前";
+    let statusClass = "";
 
-    const weekIndex = new Date(year,month,i).getDay();
-    if(weekIndex===0) day.classList.add("sun");
-    if(weekIndex===6) day.classList.add("sat");
-
-    if(eventDates.includes(dateStr)){
-
-      const selected = apiData.dates.find(d=>d.date===dateStr);
-      const symbol = getSymbol(selected.slots);
-
-      day.classList.add("active");
-
-      if(symbol){
-        const mark=document.createElement("div");
-        mark.classList.add("status-mark");
-        mark.textContent=symbol;
-
-        if(symbol==="◯") mark.classList.add("many");
-        if(symbol==="△") mark.classList.add("few");
-        if(symbol==="×") mark.classList.add("full");
-
-        day.appendChild(mark);
+    if(slotData){
+      switch(slotData.vacancyType){
+        case "MANY":
+          statusText = "◯ 空きあり";
+          statusClass = "many";
+          break;
+        case "FEW":
+          statusText = "△ 残り僅か";
+          statusClass = "few";
+          break;
+        case "FULL":
+          statusText = "× 満席";
+          statusClass = "full";
+          break;
       }
-
-      // 日付タップでモーダル表示
-      day.addEventListener("click",()=>{
-        openModal(dateStr, selected.slots);
-      });
     }
 
-    calendar.appendChild(day);
-  }
-}
-
-// ===== 記号判定 =====
-function getSymbol(slots){
-  if(slots.some(s=>s.vacancyType==="MANY")) return "◯";
-  if(slots.some(s=>s.vacancyType==="FEW")) return "△";
-  if(slots.some(s=>s.vacancyType==="FULL")) return "×";
-  return "";
-}
-
-// ===== モーダル =====
-function openModal(dateStr, slots){
-
-  modal.style.display="flex";
-  modalDate.textContent=dateStr;
-  modalBody.innerHTML="";
-
-  slots.forEach(slot=>{
-
-    const link=document.createElement("a");
-    link.classList.add("time-slot");
-
-    const start=slot.startAt.split(" ")[1].slice(0,5);
-    const end=slot.endAt.split(" ")[1].slice(0,5);
-
-    link.textContent=`${start}〜${end}（${convertStatus(slot.vacancyType)}）`;
-
-    // 👇 各公演タップでイベントページへ
-    link.href = EVENT_PAGE_URL;
+    const link = document.createElement("a");
+    link.className = "slot-card";
+    link.href = BASE_URL + SLOT_MAP[time];
     link.target = "_blank";
 
-    modalBody.appendChild(link);
+    link.innerHTML = `
+      <div class="slot-time">${time}</div>
+      <div class="slot-status ${statusClass}">
+        ${statusText}
+      </div>
+    `;
+
+    grid.appendChild(link);
+
   });
 }
-
-function convertStatus(type){
-  switch(type){
-    case "MANY": return "空きあり";
-    case "FEW": return "残りわずか";
-    case "FULL": return "満席";
-    case "NOT_IN_SALES_PERIOD": return "販売前";
-  }
-}
-
-// モーダル閉じる
-closeBtn.onclick=()=>modal.style.display="none";
-window.onclick=e=>{ if(e.target==modal) modal.style.display="none"; };
